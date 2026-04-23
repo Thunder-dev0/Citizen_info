@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #container {
+            display: none;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background: #000000; 
+            color: #ff3b3b; 
+            font-family: 'Consolas', 'Courier New', monospace;
+            padding: 20px;
+            
+            /* Main Border with Rounded Edges */
+            border: 2px solid #ff0000;
+            border-radius: 12px; 
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            
+            user-select: text; 
+            overflow: hidden; /* Ensures content respects the rounded corners */
+        }
+
+        .label { 
+            color: #b30000; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            margin-top: 15px; 
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .value { 
+            font-size: 19px; 
+            font-weight: bold;
+            margin-bottom: 5px; 
+            color: #ff4d4d;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+            background: #2a2a2a; 
+            padding: 8px;
+            border-radius: 6px; /* Matching rounded style for info boxes */
+            border-left: 3px solid #ff0000;
+        }
+
+        .close-hint {
+            margin-top: 20px;
+            font-size: 10px;
+            color: #800000;
+            text-align: center;
+            border-top: 1px solid #4d0000;
+            padding-top: 10px;
+        }
+
+        /* --- THE FULL WIDTH GREY BAR --- */
+        .separator {
+            height: 1px;
+            background: #444444; 
+            width: calc(100% + 40px); /* Spans across the padding */
+            margin-left: -20px;       /* Pulls it back to the left edge */
+            margin-top: 12px;
+            margin-bottom: 12px;
+            border: none;
+        }
+
+        /* --- THE SIGNATURE (Lighter Grey) --- */
+        .signature {
+            font-family: Verdana, Geneva, sans-serif; 
+            font-weight: 700;
+            font-size: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 1.5px; 
+            color: #888888; 
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="label">Subject Name</div>
+        <div id="name" class="value"></div>
+        
+        <div class="label">Citizen ID</div>
+        <div id="cid" class="value"></div>
+        
+        <div class="label">Date of Birth</div>
+        <div id="dob" class="value"></div>
+
+        <div class="label">Current Occupation</div>
+        <div id="job" class="value"></div>
+
+        <div class="label">Affiliation</div>
+        <div id="gang" class="value"></div>
+
+        <div class="close-hint">
+            ESC TO TERMINATE VIEW
+            <hr class="separator">
+            <div class="signature">MADE BY THUNDER</div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            let data = event.data;
+            let container = document.getElementById('container');
+            if (data.action === "show") {
+                document.getElementById('name').innerText = data.name;
+                document.getElementById('cid').innerText = data.cid;
+                document.getElementById('dob').innerText = data.dob;
+                document.getElementById('job').innerText = data.job;
+                document.getElementById('gang').innerText = data.gang;
+                container.style.display = "block";
+            } else if (data.action === "hide") {
+                container.style.display = "none";
+            }
+        });
+
+        window.addEventListener('keyup', function(event) {
+            if (event.key === "Escape") {
+                fetch(`https://${GetParentResourceName()}/close`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                    body: JSON.stringify({})
+                });
+            }
+        });
+    </script>
+</body>
+</html>
